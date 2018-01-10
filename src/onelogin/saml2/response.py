@@ -359,7 +359,7 @@ class OneLogin_Saml2_Response(object):
         :rtype: list
         """
         audience_nodes = self.__query_assertion('/saml:Conditions/saml:AudienceRestriction/saml:Audience')
-        return [OneLogin_Saml2_XML.element_text(node) for node in audience_nodes if OneLogin_Saml2_XML.element_text(node) is not None]
+        return [OneLogin_Saml2_XML.element_text(node).strip() for node in audience_nodes if OneLogin_Saml2_XML.element_text(node) is not None]
 
     def get_issuers(self):
         """
