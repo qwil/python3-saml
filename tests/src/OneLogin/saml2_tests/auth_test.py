@@ -141,7 +141,10 @@ class OneLogin_Saml2_Auth_Test(unittest.TestCase):
         auth = OneLogin_Saml2_Auth(request_data, old_settings=self.loadSettingsJSON())
         auth.process_response()
 
-        self.assertEqual(auth.get_last_error_reason(), 'Signature validation failed. SAML Response rejected')
+        self.assertEqual(
+            auth.get_last_error_reason(),
+            'Signature validation failed. SAML Response rejected - invalid assertion signature.',
+        )
 
     def testProcessNoResponse(self):
         """

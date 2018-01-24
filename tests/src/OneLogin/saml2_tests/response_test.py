@@ -743,7 +743,10 @@ class OneLogin_Saml2_Response_Test(unittest.TestCase):
         xml = self.file_contents(join(self.data_path, 'responses', 'response1.xml.base64'))
         response = OneLogin_Saml2_Response(settings, xml)
         self.assertFalse(response.is_valid(self.get_request_data()))
-        self.assertEqual('Signature validation failed. SAML Response rejected', response.get_error())
+        self.assertEqual(
+            'Signature validation failed. SAML Response rejected - invalid assertion signature.',
+            response.get_error(),
+        )
 
         with self.assertRaisesRegex(Exception, 'Signature validation failed. SAML Response rejected'):
             response.is_valid(self.get_request_data(), raise_exceptions=True)
@@ -809,7 +812,10 @@ class OneLogin_Saml2_Response_Test(unittest.TestCase):
         response = OneLogin_Saml2_Response(settings, xml)
         response.is_valid(self.get_request_data())
         self.assertNotEqual('There is no AttributeStatement on the Response', response.get_error())
-        self.assertEqual('Signature validation failed. SAML Response rejected', response.get_error())
+        self.assertEqual(
+            'Signature validation failed. SAML Response rejected - invalid response signature.',
+            response.get_error(),
+        )
 
     def testIsInValidNoKey(self):
         """
@@ -819,7 +825,7 @@ class OneLogin_Saml2_Response_Test(unittest.TestCase):
         settings = OneLogin_Saml2_Settings(self.loadSettingsJSON())
         xml = self.file_contents(join(self.data_path, 'responses', 'invalids', 'no_key.xml.base64'))
         response = OneLogin_Saml2_Response(settings, xml)
-        with self.assertRaisesRegex(Exception, 'Signature validation failed. SAML Response rejected'):
+        with self.assertRaisesRegex(Exception, 'Signature validation failed. SAML Response rejected - invalid assertion signature'):
             response.is_valid(self.get_request_data(), raise_exceptions=True)
 
     def testIsInValidMultipleAssertions(self):

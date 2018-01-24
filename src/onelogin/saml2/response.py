@@ -197,7 +197,8 @@ class OneLogin_Saml2_Response(object):
                 valid_audiences = self.get_audiences()
                 if valid_audiences and sp_entity_id not in valid_audiences:
                     raise OneLogin_Saml2_ValidationError(
-                        '%s is not a valid audience for this Response' % sp_entity_id,
+                        '%s is not a valid audience for this Response, expected one of %s' %
+                        (sp_entity_id, valid_audiences),
                         OneLogin_Saml2_ValidationError.WRONG_AUDIENCE
                     )
 
@@ -290,14 +291,14 @@ class OneLogin_Saml2_Response(object):
                 # If find a Signature on the Response, validates it checking the original response
                 if has_signed_response and not OneLogin_Saml2_Utils.validate_sign(self.document, cert, fingerprint, fingerprintalg, xpath=OneLogin_Saml2_Utils.RESPONSE_SIGNATURE_XPATH, multicerts=multicerts, raise_exceptions=False):
                     raise OneLogin_Saml2_ValidationError(
-                        'Signature validation failed. SAML Response rejected',
+                        'Signature validation failed. SAML Response rejected - invalid response signature.',
                         OneLogin_Saml2_ValidationError.INVALID_SIGNATURE
                     )
 
                 document_check_assertion = self.decrypted_document if self.encrypted else self.document
                 if has_signed_assertion and not OneLogin_Saml2_Utils.validate_sign(document_check_assertion, cert, fingerprint, fingerprintalg, xpath=OneLogin_Saml2_Utils.ASSERTION_SIGNATURE_XPATH, multicerts=multicerts, raise_exceptions=False):
                     raise OneLogin_Saml2_ValidationError(
-                        'Signature validation failed. SAML Response rejected',
+                        'Signature validation failed. SAML Response rejected - invalid assertion signature.',
                         OneLogin_Saml2_ValidationError.INVALID_SIGNATURE
                     )
 
